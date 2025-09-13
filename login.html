@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - GreenGridX</title>
+  <link rel="stylesheet" href="login.css">
+  <script src="script.js" defer></script>
+  <style>
+    /* Chat Toggle Button */
+    .chat-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #00FFB0;
+      color: #fff;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+
+    /* Chatbot Popup */
+    .chatbot {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 320px;
+      background: #fff;
+      border: 2px solid #00FFB0;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1000;
+    }
+    .chat-header {
+      background: #00FFB0;
+      color: #fff;
+      padding: 10px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-header button {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .chat-body {
+      height: 200px;
+      padding: 10px;
+      overflow-y: auto;
+      background: #f9f9f9;
+    }
+    .chat-footer {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+    #chat-input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      outline: none;
+    }
+    #send-btn {
+      padding: 8px 14px;
+      border: none;
+      background: #00FFB0;
+      color: #fff;
+      cursor: pointer;
+    }
+    .user-msg, .bot-msg {
+      margin: 6px 0;
+      padding: 7px 12px;
+      border-radius: 10px;
+      max-width: 80%;
+      clear: both;
+    }
+    .user-msg { background: #DCF8C6; float: right; }
+    .bot-msg { background: #E8E8E8; float: left; }
+  </style>
+</head>
+<body class="login">
+  <div class="overlay">
+    <form id="loginForm" class="form-card">
+      <h2>🔐 Login / Sign Up</h2>
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="buyer">Buyer</option>
+        <option value="seller">Seller</option>
+      </select>
+      <button type="submit" class="btn">Continue</button>
+    </form>
+  </div>
+
+  <!-- Chat Button -->
+  <div class="chat-toggle" id="chat-toggle">💬</div>
+
+  <!-- Chatbot Popup -->
+  <div class="chatbot" id="chatbot">
+    <div class="chat-header">
+      🤖 Assistant
+      <button id="close-btn">✖</button>
+    </div>
+    <div class="chat-body" id="chat-body"></div>
+    <div class="chat-footer">
+      <input type="text" id="chat-input" placeholder="Type your message..." />
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatbot = document.getElementById("chatbot");
+    const toggleBtn = document.getElementById("chat-toggle");
+    const closeBtn = document.getElementById("close-btn");
+    const chatBody = document.getElementById("chat-body");
+    const chatInput = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    const responses = {
+      "hello": "👋 Hi! How can I help you?",
+      "login": "👉 To log in, enter your username, password, and role, then press Continue.",
+      "signup": "📝 To sign up, fill in the form with a new username & password.",
+      "forgot password": "🔑 Use the reset password option to recover your account."
+    };
+
+    function addMessage(sender, message) {
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add(sender === "user" ? "user-msg" : "bot-msg");
+      msgDiv.innerText = message;
+      chatBody.appendChild(msgDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function handleInput() {
+      const userMsg = chatInput.value.trim().toLowerCase();
+      if (!userMsg) return;
+      addMessage("user", chatInput.value);
+      chatInput.value = "";
+
+      let reply = "🤔 Sorry, I didn’t get that. Try 'login', 'signup', or 'forgot password'.";
+      for (let key in responses) {
+        if (userMsg.includes(key)) {
+          reply = responses[key];
+          break;
+        }
+      }
+
+      setTimeout(() => {
+        addMessage("bot", reply);
+      }, 500);
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      chatbot.style.display = "flex";
+      chatBody.innerHTML = "";
+      addMessage("bot", "👋 Hello! Need help with Login or Signup?");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      chatbot.style.display = "none";
+    });
+
+    sendBtn.addEventListener("click", handleInput);
+    chatInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") handleInput();
+    });
+  </script>
+</body>
+</html>

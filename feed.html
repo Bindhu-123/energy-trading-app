@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback & Info - GreenGridX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      color: #f1f1f1;
+    }
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      animation: fadeUp 1s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ffcc;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    textarea, select, input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 15px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+    }
+    textarea:focus, select:focus, input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #00ffcc, #0077ff);
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover { transform: scale(1.05); }
+
+    .info-box {
+      background: rgba(0,0,0,0.4);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+    .info-box h3 { color: #00ffcc; margin-top: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💡 Feedback & Information</h1>
+
+    <!-- Feedback Section -->
+    <div class="section">
+      <h2>📝 Submit Feedback</h2>
+      <label for="rating">Rate Your Experience</label>
+      <select id="rating">
+        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+        <option value="4">⭐⭐⭐⭐ Good</option>
+        <option value="3">⭐⭐⭐ Average</option>
+        <option value="2">⭐⭐ Poor</option>
+        <option value="1">⭐ Very Bad</option>
+      </select>
+
+      <label for="comments">Your Comments</label>
+      <textarea id="comments" rows="4" placeholder="Write your feedback..."></textarea>
+
+      <button class="btn" onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+
+    <!-- Information Section -->
+    <div class="section">
+      <h2>📘 Information & Help</h2>
+      <div class="info-box">
+        <h3>About GreenGridX</h3>
+        <p>
+          GreenGridX is a decentralized energy trading platform where buyers and sellers can 
+          securely trade renewable energy using blockchain technology.
+        </p>
+      </div>
+      <div class="info-box">
+        <h3>Need Help?</h3>
+        <p>Contact us at: <b>support@greengrigx.com</b></p>
+        <p>FAQs, guides, and documentation are available on our website.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function submitFeedback() {
+      const rating = document.getElementById("rating").value;
+      const comments = document.getElementById("comments").value.trim();
+
+      if (comments === "") {
+        alert("⚠️ Please write your feedback before submitting!");
+        return;
+      }
+
+      alert("✅ Thank you for your feedback! Rating: " + rating + " | Comment: " + comments);
+      document.getElementById("comments").value = "";
+    }
+  </script>
+</body>
+</html>

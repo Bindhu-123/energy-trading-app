@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GreenGridX - Seller Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* (KEEP ALL YOUR ORIGINAL CSS — unchanged) */
+    /* Background Gradient Animation */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      color: #f1f1f1;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      box-shadow: 3px 0 15px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 50px;
+      padding-left: 20px;
+      position: fixed;
+      left: -250px;
+      top: 0;
+      transition: all 0.4s ease-in-out;
+      z-index: 999;
+    }
+
+    .sidebar.active { left: 0; }
+
+    .sidebar-menu { list-style: none; padding: 0; }
+    .sidebar-menu li { margin: 15px 0; }
+    .sidebar-menu li a {
+      color: #fff; text-decoration: none; font-weight: 500; transition: 0.3s;
+    }
+    .sidebar-menu li a:hover { color: #00ffcc; padding-left: 5px; }
+
+    .logout-btn {
+      padding: 12px;
+      background: #ff4d4d;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .logout-btn:hover { background: #ff1a1a; }
+
+    /* Toggle button */
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #00cc66;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* Main content */
+    .main-content {
+      margin-left: 0;
+      padding: 80px 20px;
+      transition: margin-left 0.4s ease-in-out;
+      text-align: center;
+    }
+    .sidebar.active ~ .main-content { margin-left: 250px; }
+
+    .welcome-text {
+      font-size: 2.5rem;
+      color: #00ffcc;
+      text-shadow: 0 0 12px rgba(0,255,200,0.9);
+      animation: fadeIn 2s ease-in-out;
+      margin-bottom: 40px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1430px;
+      margin: auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      animation: fadeUp 1s ease;
+      text-align: left;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card h3 { margin-bottom: 15px; color: #00ffcc; }
+
+    .btn {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #00ffcc, #0077ff);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #00ffaa, #0055ff);
+    }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table th, table td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      text-align: left;
+    }
+    table th { color: #00ffcc; }
+
+    /* Chart */
+    canvas { width: 100% !important; height: 250px !important; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  
+<div class="sidebar" id="sidebar">
+  <ul class="sidebar-menu">
+    <li><a href="#">📊 Dashboard</a></li>
+    <li><a href="settings.html">⚙️ Settings</a></li>
+    <li><a href="carbon.html" id="openCarbon">🌱 Carbon Tokens</a></li>
+    <li><a href="gamification.html" id="openGamification">🏆 Gamification</a></li>
+  </ul>
+</div>
+
+   
+  <!-- Toggle Button -->
+  <button class="menu-toggle" id="menu-toggle">☰</button>
+
+  <!-- Main Content -->
+  <div class="main-content" id="main-content">
+    <h1 class="welcome-text">⚡ Seller Dashboard ⚡</h1>
+    
+    <div class="grid">
+      <!-- Stats -->
+      <div class="card">
+        <h3>Seller Stats</h3>
+        <p>Energy Available: <b id="energyAvailable">120</b> kWh</p>
+        <p>Total Earnings: <b>$450</b></p>
+      </div>
+
+      <!-- Add Energy -->
+      <div class="card">
+        <h3>Add Energy Listing</h3>
+        <input id="addKwh" type="number" placeholder="Enter kWh" style="padding:8px; border-radius:8px; width:100%; margin-bottom:10px;">
+        <input id="addPrice" type="number" placeholder="Price per kWh ($)" style="padding:8px; border-radius:8px; width:100%; margin-bottom:10px;">
+        <button id="addListingBtn" class="btn">Add Listing</button>
+      </div>
+
+      <!-- Active Listings -->
+      <div class="card">
+        <h3>Active Listings</h3>
+        <table id="activeListingsTable">
+          <tr><th>kWh</th><th>Price</th><th>Status</th></tr>
+          <tr><td>50</td><td>$0.12</td><td>Available</td></tr>
+          <tr><td>30</td><td>$0.10</td><td>Available</td></tr>
+        </table>
+      </div>
+
+      <!-- Orders -->
+      <div class="card">
+        <h3>Orders Received</h3>
+        <table>
+          <tr><th>Buyer</th><th>kWh</th><th>Total</th><th>Status</th></tr>
+          <tr><td>Buyer123</td><td>20</td><td>$2.40</td><td>Completed</td></tr>
+          <tr><td>Buyer456</td><td>15</td><td>$1.80</td><td>Pending</td></tr>
+        </table>
+      </div>
+
+      <!-- Earnings Chart -->
+      <div class="card">
+        <h3>Earnings Overview</h3>
+        <canvas id="earningsChart"></canvas>
+      </div>
+
+      <!-- AI Energy Prediction (NEW) -->
+      <div class="card">
+        <h3>AI Energy Prediction & Pricing</h3>
+        <p>Forecast (next 6 intervals):</p>
+        <div id="forecastList" style="margin-bottom:10px; color:#fff;"></div>
+        <p>Suggested Price Change: <b id="priceSuggestion">—</b></p>
+        <button id="applySuggestion" class="btn">Apply Suggested Price (mock)</button>
+        <canvas id="aiChart" style="margin-top:12px;"></canvas>
+        <p style="margin-top:8px; font-size:12px; color:#bfeee0">Model: lightweight exponential smoothing + linear trend (browser).</p>
+      </div>
+
+      <!-- IoT Smart Meter -->
+      <div class="card">
+        <h3>IoT Smart Meter – Live Generation</h3>
+        <p>Current Generation: <b id="currentGen">0.00</b> kWh</p>
+        <p>Total Available for Sale: <b id="iotAvailable">120.00</b> kWh</p>
+        <canvas id="iotChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Sidebar Toggle
+    const menuToggle = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("main-content");
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      mainContent.classList.toggle("active");
+    });
+
+    // Earnings Chart (unchanged)
+    const ctx = document.getElementById('earningsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        datasets: [{
+          label: "Earnings ($)",
+          data: [50, 75, 60, 90, 120, 80, 100],
+          borderColor: "#00ffcc",
+          backgroundColor: "rgba(0,255,200,0.2)",
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: "#fff" } } },
+        scales: {
+          x: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } },
+          y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } }
+        }
+      }
+    });
+
+    // IoT Smart Meter Simulation (existing)
+    let totalAvailable = 120;
+    const genDisplay = document.getElementById("currentGen");
+    const availDisplay = document.getElementById("iotAvailable");
+    const energyAvailable = document.getElementById("energyAvailable");
+
+    // IoT chart setup
+    const iotCtx = document.getElementById("iotChart").getContext("2d");
+    const iotChart = new Chart(iotCtx, {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [{
+          label: "Live Generation (kWh)",
+          data: [],
+          borderColor: "#00ffcc",
+          backgroundColor: "rgba(0,255,200,0.05)",
+          fill: true,
+          tension: 0.3,
+          pointRadius: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: "#fff" } } },
+        scales: {
+          x: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } },
+          y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } }
+        }
+      }
+    });
+
+    // keep a separate history array for easier processing
+    const iotHistory = []; // array of numbers (kWh)
+
+    setInterval(() => {
+      // simulate new generation between 0.5 and 3.0 kWh
+      const newGen = parseFloat((Math.random() * 2.5 + 0.5).toFixed(2));
+      genDisplay.innerText = newGen.toFixed(2);
+      totalAvailable = parseFloat((parseFloat(totalAvailable) + newGen).toFixed(2));
+      availDisplay.innerText = totalAvailable.toFixed(2);
+      energyAvailable.innerText = totalAvailable.toFixed(2);
+
+      // Update history and chart
+      const nowLabel = new Date().toLocaleTimeString();
+      iotHistory.push(newGen);
+      iotChart.data.labels.push(nowLabel);
+      iotChart.data.datasets[0].data.push(newGen);
+
+      // keep last 30 points
+      if (iotHistory.length > 30) {
+        iotHistory.shift();
+      }
+      if (iotChart.data.labels.length > 30) {
+        iotChart.data.labels.shift();
+        iotChart.data.datasets[0].data.shift();
+      }
+      iotChart.update();
+
+      // Fake blockchain log (for demo)
+      console.log(`Smart Meter logged: ${newGen} kWh at ${nowLabel}`);
+
+      // After new IoT data arrives, refresh AI forecasts
+      updateAIPrediction();
+    }, 5000);
+
+    // -------------------------
+    // AI Prediction Module
+    // - Uses the iotHistory array (recent kWh readings)
+    // - Forecast horizon = 6 future intervals (for demo)
+    // - Method: simple exponential smoothing with trend (Holt's linear)
+    // -------------------------
+
+    // helper: simple Holt's linear method (alpha, beta)
+    function holtLinearForecast(history, horizon = 6, alpha = 0.5, beta = 0.2) {
+      // history: array of numbers
+      if (!history || history.length === 0) return Array(horizon).fill(0);
+
+      // initialize level and trend
+      let l = history[0];
+      let b = (history.length > 1) ? (history[history.length - 1] - history[0]) / (history.length - 1) : 0;
+
+      for (let t = 1; t < history.length; t++) {
+        const y = history[t];
+        const l_prev = l;
+        l = alpha * y + (1 - alpha) * (l + b);
+        b = beta * (l - l_prev) + (1 - beta) * b;
+      }
+
+      const res = [];
+      for (let k = 1; k <= horizon; k++) {
+        res.push(parseFloat((l + b * k).toFixed(3))); // predicted kWh
+      }
+      return res;
+    }
+
+    // price suggestion:
+    // - baseline price (average of active listings or fallback)
+    // - if forecasted average demand increases > x% => raise price by sensitivity * %increase
+    // - if forecasted average demand decreases => lower price (mock)
+    function computePriceSuggestion(forecast, baselinePrice = 0.12) {
+      if (!forecast || forecast.length === 0) return { suggestion: "No data", changePct: 0 };
+
+      const histAvg = (iotHistory.length > 0) ? (iotHistory.reduce((a,b)=>a+b,0)/iotHistory.length) : 1;
+      const fAvg = (forecast.reduce((a,b)=>a+b,0) / forecast.length);
+      const pctChange = ((fAvg - histAvg) / (histAvg || 1)) * 100;
+
+      // sensitivity tunable for demo
+      const sensitivity = 0.6; // how aggressive price changes are
+      let priceChangePct = Math.round(pctChange * sensitivity * 100) / 100; // two decimals
+
+      // clamp change to reasonable demo bounds
+      if (priceChangePct > 30) priceChangePct = 30;
+      if (priceChangePct < -25) priceChangePct = -25;
+
+      const suggestionText = (priceChangePct > 2) ? `Increase price by +${priceChangePct}% (demand predicted up)` :
+                             (priceChangePct < -2) ? `Lower price by ${priceChangePct}% (demand predicted down)` :
+                             `Keep price (stable forecast)`;
+
+      return { suggestion: suggestionText, changePct: priceChangePct, histAvg, fAvg };
+    }
+
+    // UI elements
+    const forecastList = document.getElementById("forecastList");
+    const priceSuggestionEl = document.getElementById("priceSuggestion");
+    const applySuggestionBtn = document.getElementById("applySuggestion");
+
+    // AI Chart overlay (history + forecast)
+    const aiCtx = document.getElementById("aiChart").getContext("2d");
+    const aiChart = new Chart(aiCtx, {
+      type: "line",
+      data: {
+        labels: [], // will combine last history labels + future labels "T+1"
+        datasets: [
+          {
+            label: "Historical (kWh)",
+            data: [],
+            borderColor: "#00ffcc",
+            backgroundColor: "rgba(0,255,200,0.05)",
+            fill: false,
+            tension: 0.3,
+            pointRadius: 1
+          },
+          {
+            label: "Forecast (kWh)",
+            data: [],
+            borderColor: "#ffbf00",
+            borderDash: [6,4],
+            fill: false,
+            tension: 0.3,
+            pointRadius: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: "#fff" } }
+        },
+        scales: {
+          x: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.05)" } },
+          y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.05)" } }
+        }
+      }
+    });
+
+    // update forecast UI/chart when IoT history changes
+    function updateAIPrediction() {
+      // use last n points
+      const historyForModel = iotHistory.slice(-20); // last up to 20 points
+      if (historyForModel.length < 3) {
+        // not enough data yet
+        forecastList.innerText = "Gathering data — waiting for more IoT samples...";
+        priceSuggestionEl.innerText = "—";
+        aiChart.data.labels = [];
+        aiChart.data.datasets[0].data = [];
+        aiChart.data.datasets[1].data = [];
+        aiChart.update();
+        return;
+      }
+
+      // get a forecast using Holt's linear
+      const horizon = 6;
+      const forecast = holtLinearForecast(historyForModel, horizon, 0.45, 0.15);
+
+      // compute suggestion
+      const baselinePrice = getBaselinePrice();
+      const suggestion = computePriceSuggestion(forecast, baselinePrice);
+
+      // update forecast list (presentable)
+      forecastList.innerHTML = "";
+      forecast.forEach((v,i) => {
+        const line = document.createElement("div");
+        line.style.marginBottom = "4px";
+        line.innerText = `T+${i+1}: ${v.toFixed(2)} kWh`;
+        forecastList.appendChild(line);
+      });
+
+      priceSuggestionEl.innerText = `${suggestion.suggestion} (based on recent avg ${suggestion.histAvg.toFixed(2)} kWh)`;
+
+      // update AI chart: show last history and forecast appended
+      const labels = [];
+      const histData = [];
+      const lastLabelsCount = iotChart.data.labels.slice(-12); // reuse chart labels if available
+      // if not available, just create time offsets
+      for (let i = 0; i < historyForModel.length; i++) {
+        labels.push(i === 0 ? "t- " + (historyForModel.length - 1) : ""); // keep minimal
+        histData.push(historyForModel[i]);
+      }
+      // create simple future labels
+      for (let k = 1; k <= horizon; k++) {
+        labels.push(`T+${k}`);
+      }
+
+      aiChart.data.labels = labels;
+      aiChart.data.datasets[0].data = historyForModel.slice(); // historical
+      aiChart.data.datasets[1].data = forecast.slice(); // forecast
+      aiChart.update();
+
+      // console log for demo / judges
+      console.log("AI forecast:", forecast.map(x => x.toFixed(3)), " suggestion:", suggestion.suggestion);
+    }
+
+    // Determine baseline price from active listings in table (simple)
+    function getBaselinePrice() {
+      try {
+        const table = document.getElementById("activeListingsTable");
+        const rows = table.querySelectorAll("tr");
+        // skip header row
+        const prices = [];
+        for (let i = 1; i < rows.length; i++) {
+          const priceText = rows[i].children[1]?.innerText || "";
+          // remove $ and parse
+          const p = parseFloat(priceText.replace("$", ""));
+          if (!isNaN(p)) prices.push(p);
+        }
+        if (prices.length === 0) return 0.12; // fallback
+        return prices.reduce((a,b)=>a+b,0) / prices.length;
+      } catch (e) {
+        return 0.12;
+      }
+    }
+
+    // Apply suggestion (mock) — updates the first active listing price to show effect
+    applySuggestionBtn.addEventListener("click", () => {
+      const suggestionText = priceSuggestionEl.innerText;
+      if (!suggestionText || suggestionText === "—") { alert("No suggestion available yet."); return; }
+
+      // parse percentage from element (simple)
+      const pctMatch = suggestionText.match(/([+-]?\d+\.?\d*)%/);
+      if (!pctMatch) {
+        alert("Suggestion not actionable (stable).");
+        return;
+      }
+      const pct = parseFloat(pctMatch[1]);
+      // update first listing price (mock only)
+      const table = document.getElementById("activeListingsTable");
+      const firstRow = table.querySelectorAll("tr")[1];
+      if (!firstRow) { alert("No active listings to update."); return; }
+      const priceCell = firstRow.children[1];
+      const current = parseFloat(priceCell.innerText.replace("$",""));
+      const newPrice = parseFloat((current * (1 + pct/100)).toFixed(3));
+      priceCell.innerText = `$${newPrice}`;
+      alert(`Applied suggested change: ${pct}% → updated first listing to $${newPrice}`);
+    });
+
+    // small "add listing" handler (UI-only)
+    document.getElementById("addListingBtn").addEventListener("click", () => {
+      const kwh = parseFloat(document.getElementById("addKwh").value);
+      const price = parseFloat(document.getElementById("addPrice").value);
+      if (!kwh || !price) { alert("Enter both kWh and price"); return; }
+      // append a row
+      const table = document.getElementById("activeListingsTable");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${kwh}</td><td>$${price}</td><td>Available</td>`;
+      table.appendChild(tr);
+      // reduce available energy (mock)
+      totalAvailable = Math.max(0, (parseFloat(totalAvailable) - kwh));
+      energyAvailable.innerText = totalAvailable.toFixed(2);
+      availDisplay.innerText = totalAvailable.toFixed(2);
+      // clear inputs
+      document.getElementById("addKwh").value = "";
+      document.getElementById("addPrice").value = "";
+    });
+
+    // initialize (call once in case IoT already has data)
+    updateAIPrediction();
+  </script>
+</body>
+</html>

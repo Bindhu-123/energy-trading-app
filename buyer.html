@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenGridX - Buyer Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      color: #f1f1f1;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      box-shadow: 3px 0 15px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 70px;
+      padding-left: 10px;
+      position: fixed;
+      left: -250px;
+      top: 0;
+      transition: all 0.4s ease-in-out;
+      z-index: 999;
+    }
+
+    .sidebar.active { left: 0; }
+
+    .sidebar-menu { list-style: none; padding: 0; }
+    .sidebar-menu li { margin: 15px 0; }
+    .sidebar-menu li a {
+      color: #fff; text-decoration: none; font-weight: 500; transition: 0.3s;
+    }
+    .sidebar-menu li a:hover { color: #00ffcc; padding-left: 5px; }
+
+    .logout-btn {
+      margin: 20px 10px;
+      padding: 10px;
+      background: #ff4d4d;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .logout-btn:hover { background: #ff1a1a; }
+
+    /* Toggle button */
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #00cc66;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* Main content */
+    .main-content {
+      margin-left: 0;
+      padding: 80px 20px;
+      transition: margin-left 0.4s ease-in-out;
+      text-align: center;
+    }
+    .sidebar.active ~ .main-content { margin-left: 250px; }
+
+    .welcome-text {
+      font-size: 2.5rem;
+      color: #00ffcc;
+      text-shadow: 0 0 12px rgba(0,255,200,0.9);
+      animation: fadeIn 2s ease-in-out;
+      margin-bottom: 40px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1430px;
+      margin: auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      animation: fadeUp 1s ease;
+      text-align: left;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card h3 { margin-bottom: 15px; color: #00ffcc; }
+
+    .btn {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #00ffcc, #0077ff);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #00ffaa, #0055ff);
+    }
+    .btn.cancel { background: #ff4d4d; }
+    .btn.cancel:hover { background: #e60000; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table th, table td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      text-align: left;
+    }
+    table th { color: #00ffcc; }
+
+    /* Chart */
+    canvas { width: 100% !important; height: 250px !important; }
+
+    /* Wallet Modal */
+    .wallet-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .wallet-modal-content {
+      background: #1e2a38;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: 350px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+    .wallet-modal-content h2 {
+      color: #00ffcc;
+      margin-bottom: 15px;
+    }
+    .wallet-modal-content p { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="sidebar-menu">
+      <li><a href="#">📊 Dashboard</a></li>
+    <li><a href="carbon.html?role=buyer" id="openCarbon">🌱 Carbon Tokens</a></li>
+
+    <li><a href="gamification.html?role=buyer" id="openGamification">🏆 Gamification</a></li>
+
+    <li><a href="settings.html">⚙️ Settings</a></li>
+    <li><a href="feed.html">💡 Feedback and Information</a></li>
+    </ul>
+    <button class="logout-btn">Logout</button>
+  </div>
+
+  <!-- Toggle Button -->
+  <button class="menu-toggle" id="menu-toggle">☰</button>
+
+  <!-- Main Content -->
+  <div class="main-content" id="main-content">
+    <h1 class="welcome-text">⚡ Buyer Dashboard ⚡</h1>
+    
+    <div class="grid">
+      <!-- Buyer Stats -->
+      <div class="card">
+        <h3>Your Stats</h3>
+        <p id="energyPurchased">Energy Purchased: <b>85 kWh</b></p>
+        <p id="walletBalance">Wallet Balance: <b>0.05 ETH</b></p>
+      </div>
+
+      <!-- Marketplace -->
+      <div class="card">
+        <h3>Marketplace</h3>
+        <table>
+          <tr><th>Seller</th><th>kWh</th><th>Price (ETH)</th><th></th></tr>
+          <tr><td>Seller123</td><td>50</td><td>0.01</td><td><button class="btn buy-btn">Buy</button></td></tr>
+          <tr><td>Seller456</td><td>80</td><td>0.015</td><td><button class="btn buy-btn">Buy</button></td></tr>
+          <tr><td>Seller789</td><td>40</td><td>0.008</td><td><button class="btn buy-btn">Buy</button></td></tr>
+        </table>
+      </div>
+
+      <!-- Orders -->
+      <div class="card">
+        <h3>Your Orders</h3>
+        <table id="ordersTable">
+          <tr><th>Seller</th><th>kWh</th><th>Total</th><th>Status</th></tr>
+        </table>
+      </div>
+
+      <!-- Analytics -->
+      <div class="card">
+        <h3>Energy Usage Analytics</h3>
+        <canvas id="usageChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet Modal -->
+  <div id="walletModal" class="wallet-modal">
+    <div class="wallet-modal-content">
+      <h2>🔗 Connect Wallet</h2>
+      <p>Please connect your MetaMask wallet to continue.</p>
+      <button class="btn" onclick="connectWallet()">Connect MetaMask</button>
+      <button class="btn cancel" onclick="closeWalletModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Sidebar Toggle
+    const menuToggle = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("main-content");
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      mainContent.classList.toggle("active");
+    });
+
+   
+    let mockWallet = null;
+    let mockBalance = 0.05; // ETH balance
+    let totalEnergy = 85;   // kWh
+    let ordersTable = document.getElementById("ordersTable");
+
+    function closeWalletModal() {
+      document.getElementById("walletModal").style.display = "none";
+    }
+
+    async function connectWallet() {
+      mockWallet = "0x" + Math.random().toString(16).substr(2, 8) + "...abcd";
+      alert("✅ Wallet connected: " + mockWallet);
+      closeWalletModal();
+    }
+
+    async function buyEnergy(kWh, priceEth, seller) {
+      if (!mockWallet) {
+        document.getElementById("walletModal").style.display = "flex";
+        return;
+      }
+      if (mockBalance < priceEth) {
+        alert("❌ Insufficient funds in wallet");
+        return;
+      }
+
+      let row = ordersTable.insertRow(-1);
+      row.innerHTML = `
+        <td>${seller}</td>
+        <td>${kWh}</td>
+        <td>${priceEth} ETH</td>
+        <td>⏳ Pending</td>
+      `;
+
+      setTimeout(() => {
+        mockBalance -= priceEth;
+        totalEnergy += kWh;
+
+        row.cells[3].innerHTML = "✅ Completed";
+        document.getElementById("walletBalance").innerHTML = 
+          "Wallet Balance: <b>" + mockBalance.toFixed(3) + " ETH</b>";
+        document.getElementById("energyPurchased").innerHTML = 
+          "Energy Purchased: <b>" + totalEnergy + " kWh</b>";
+      }, 2000);
+    }
+
+    // Hook buy buttons
+    document.querySelectorAll(".buy-btn").forEach((btn, index) => {
+      if (index === 0) btn.onclick = () => buyEnergy(50, 0.01, "Seller123");
+      if (index === 1) btn.onclick = () => buyEnergy(80, 0.015, "Seller456");
+      if (index === 2) btn.onclick = () => buyEnergy(40, 0.008, "Seller789");
+    });
+
+    // Chart
+    const ctx = document.getElementById('usageChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        datasets: [{
+          label: "Energy Purchased (kWh)",
+          data: [12, 18, 10, 20, 25, 15, 22],
+          backgroundColor: "rgba(0,255,200,0.5)",
+          borderColor: "#00ffcc",
+          borderWidth: 2,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: "#fff" } } },
+        scales: {
+          x: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } },
+          y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GreenGridX — Decentralized Energy Trading</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="site-root">
+    <!-- HERO: fills the viewport -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-visual" aria-hidden="true">
+          <!-- simple neutral globe + lightning SVG (clean) -->
+          <svg viewBox="0 0 120 120" width="120" height="120" class="globe-svg">
+            <circle cx="60" cy="60" r="58" fill="url(#g1)"/>
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="#00c2ff"/>
+                <stop offset="1" stop-color="#3ad29f"/>
+              </linearGradient>
+            </defs>
+            <path d="M40 75 L66 44 L56 44 L82 16" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+
+        <div class="hero-text">
+          <h1 class="brand">GreenGridX</h1>
+          <p class="lead">
+            Peer-to-peer renewable energy marketplace — trade surplus solar & wind, earn carbon credits, and power your community.
+          </p>
+
+          <div class="cta">
+            <a class="btn btn-primary" href="login.html">Login</a>
+            <a class="btn btn-outline" href="login.html">Sign Up</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES: full-width, no gaps -->
+    <section class="features">
+      <div class="feature">
+        <svg viewBox="0 0 24 24" class="f-icon"><path fill="currentColor" d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 6h-2v6l5 3 .8-1.4-3.8-2.2V8z"/></svg>
+        <h3>Live Dashboard</h3>
+        <p>Real-time simulated nodes & energy flows — instant visibility.</p>
+      </div>
+
+      <div class="feature">
+        <svg viewBox="0 0 24 24" class="f-icon"><path fill="currentColor" d="M3 12h3l4 8 4-16 4 8h3"/></svg>
+        <h3>Peer-to-Peer Trading</h3>
+        <p>Buy or list surplus energy with secure, transparent trade actions.</p>
+      </div>
+
+      <div class="feature">
+        <svg viewBox="0 0 24 24" class="f-icon"><path fill="currentColor" d="M12 2l2 5h5l-4 3 2 6-5-3-5 3 2-6-4-3h5z"/></svg>
+        <h3>Carbon Credits</h3>
+        <p>Earn gamified carbon credits for contributing or choosing green power.</p>
+      </div>
+    </section>
+
+    <footer class="site-foot">
+      <small>Made by <strong>Code Champs</strong> • Hackathon prototype</small>
+    </footer>
+  </main>
+
+</body>
+</html>

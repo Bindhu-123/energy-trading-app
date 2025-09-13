@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - GreenGridX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .settings-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 18px;
+      padding: 35px;
+      width: 420px;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+      animation: fadeUp 1s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+      color: #00ffcc;
+      text-shadow: 0 0 10px rgba(0,255,200,0.8);
+    }
+
+    .setting {
+      margin: 15px 0;
+      text-align: left;
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    .setting:hover { transform: scale(1.02); }
+
+    label {
+      font-size: 1rem;
+    }
+
+    select, input[type="checkbox"] {
+      padding: 6px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    .logout-btn {
+      margin-top: 25px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ff4d4d, #e60000);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+    .logout-btn:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <div class="settings-card">
+    <h2>⚙️ Settings</h2>
+
+    <div class="setting">
+      <label>🌗 Dark Mode</label>
+      <input type="checkbox" id="darkModeToggle">
+    </div>
+
+    <div class="setting">
+      <label>🔔 Notifications</label>
+      <input type="checkbox" id="notificationsToggle" checked>
+    </div>
+
+    <div class="setting">
+      <label>🌍 Language</label>
+      <select id="languageSelect">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+      </select>
+    </div>
+
+    <div class="setting">
+      <label>🔐 Privacy Mode</label>
+      <input type="checkbox" id="privacyToggle">
+    </div>
+
+    <div class="setting">
+      <label>🛡️ 2FA Security</label>
+      <input type="checkbox" id="securityToggle">
+    </div>
+
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <script>
+    // Load user settings from localStorage
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const notificationsToggle = document.getElementById("notificationsToggle");
+    const languageSelect = document.getElementById("languageSelect");
+    const privacyToggle = document.getElementById("privacyToggle");
+    const securityToggle = document.getElementById("securityToggle");
+
+    // Load saved settings
+    window.onload = () => {
+      const settings = JSON.parse(localStorage.getItem("settings")) || {};
+      darkModeToggle.checked = settings.darkMode || false;
+      notificationsToggle.checked = settings.notifications ?? true;
+      languageSelect.value = settings.language || "en";
+      privacyToggle.checked = settings.privacy || false;
+      securityToggle.checked = settings.security || false;
+
+      applyTheme();
+    };
+
+    // Save settings on change
+    document.querySelectorAll("input, select").forEach(el => {
+      el.addEventListener("change", saveSettings);
+    });
+
+    function saveSettings() {
+      const settings = {
+        darkMode: darkModeToggle.checked,
+        notifications: notificationsToggle.checked,
+        language: languageSelect.value,
+        privacy: privacyToggle.checked,
+        security: securityToggle.checked
+      };
+      localStorage.setItem("settings", JSON.stringify(settings));
+      applyTheme();
+    }
+
+    function applyTheme() {
+      if (darkModeToggle.checked) {
+        document.body.style.background = "linear-gradient(135deg, #000000, #434343)";
+      } else {
+        document.body.style.background = "linear-gradient(135deg, #141e30, #243b55)";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

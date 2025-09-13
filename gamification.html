@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gamification - GreenGridX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .popup {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      animation: popUp 0.7s ease forwards;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    @keyframes popUp {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    h1 {
+      color: #ffcc00;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+      text-shadow: 0 0 15px #ffcc00;
+    }
+
+    .leaderboard {
+      margin: 20px 0;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .leaderboard th, .leaderboard td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .leaderboard th {
+      color: #00ffcc;
+      text-align: center;
+    }
+    .leaderboard td {
+      font-size: 1rem;
+    }
+
+    .achievements {
+      margin-top: 20px;
+    }
+    .badge {
+      display: inline-block;
+      margin: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      font-size: 0.95rem;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn {
+      margin-top: 25px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ffcc00, #ff6600);
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #ffaa00, #ff3300);
+    }
+  </style>
+</head>
+<body>
+  <div class="popup">
+    <h1>🏆 Gamification</h1>
+
+    <!-- Leaderboard -->
+    <table class="leaderboard">
+      <tr><th>Rank</th><th>User</th><th>Points</th></tr>
+      <tr><td>🥇 1</td><td>You</td><td>1520</td></tr>
+      <tr><td>🥈 2</td><td>EcoWarrior21</td><td>1390</td></tr>
+      <tr><td>🥉 3</td><td>GreenGuru</td><td>1205</td></tr>
+      <tr><td>4</td><td>SolarSavior</td><td>1150</td></tr>
+      <tr><td>5</td><td>WindWizard</td><td>1090</td></tr>
+    </table>
+
+    <!-- Achievements -->
+    <div class="achievements">
+      <span class="badge">🔥 100 Days Streak</span>
+      <span class="badge">🌍 Top 1% Green Saver</span>
+      <span class="badge">⚡ 500 kWh Contributed</span>
+    </div>
+
+    <button class="btn" onclick="goBack()">⬅ Back to Dashboard</button>
+  </div>
+
+  <script>
+    // 🎉 Confetti when page loads
+    function launchConfetti() {
+      var duration = 3 * 1000;
+      var end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    launchConfetti();
+
+    function goBack() {
+      window.location.href = "buyer.html";
+    }
+  </script>
+</body>
+</html>
